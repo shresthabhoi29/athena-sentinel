@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { hasSupabaseEnv } from './env';
+import { demoSessionCookie, hasSupabaseEnv, isDemoAuthEnabled } from './env';
 
 const publicAuthRoutes = new Set(['/login', '/signup', '/forgot-password', '/reset-password']);
 const signedInRedirectRoutes = new Set(['/login', '/signup', '/forgot-password']);
@@ -34,6 +34,17 @@ export async function updateSession(request: NextRequest) {
   });
 
   if (!hasSupabaseEnv()) {
+    const hasDemoSession =
+      isDemoAuthEnabled() && request.cookies.get(demoSessionCookie)?.value === 'true';
+
+    if (hasDemoSession && signedInRedirectRoutes.has(request.nextUrl.pathname)) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+
+    if (hasDemoSession) {
+      return supabaseResponse;
+    }
+
     if (!isPublicRoute(request.nextUrl.pathname)) {
       return redirectToLogin(request);
     }

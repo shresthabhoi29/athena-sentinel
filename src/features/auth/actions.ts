@@ -1,8 +1,9 @@
 'use server';
 
 import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
-import { getSupabaseEnvError } from '@/lib/supabase/env';
+import { demoSessionCookie, getSupabaseEnvError, isDemoAuthEnabled } from '@/lib/supabase/env';
 import { ensureUserRecords } from '@/lib/auth/user-records';
 import {
   forgotPasswordSchema,
@@ -38,6 +39,23 @@ async function getOrigin() {
     process.env.VERCEL_URL?.replace(/^/, 'https://') ||
     'http://localhost:3000'
   );
+}
+
+async function startDemoSession(nextPath = '/') {
+  const cookieStore = await cookies();
+  cookieStore.set(demoSessionCookie, 'true', {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: false,
+    path: '/',
+  });
+
+  return {
+    ok: true,
+    message:
+      'Demo session started. Add real Supabase credentials when you are ready for email auth.',
+    redirectTo: safeNextPath(nextPath),
+  };
 }
 
 function callbackUrl(origin: string, next = '/') {
@@ -106,6 +124,10 @@ export async function signInWithPassword(
   const configError = getSupabaseEnvError();
 
   if (configError) {
+    if (isDemoAuthEnabled()) {
+      return startDemoSession(nextPath);
+    }
+
     return { ok: false, message: configError };
   }
 
@@ -139,6 +161,10 @@ export async function signUpWithPassword(values: SignupInput): Promise<AuthActio
   const configError = getSupabaseEnvError();
 
   if (configError) {
+    if (isDemoAuthEnabled()) {
+      return startDemoSession();
+    }
+
     return { ok: false, message: configError };
   }
 
@@ -199,6 +225,10 @@ export async function sendMagicLink(
   const configError = getSupabaseEnvError();
 
   if (configError) {
+    if (isDemoAuthEnabled()) {
+      return startDemoSession(nextPath);
+    }
+
     return { ok: false, message: configError };
   }
 
@@ -295,6 +325,11 @@ export async function signOut(): Promise<AuthActionResult> {
   const configError = getSupabaseEnvError();
 
   if (configError) {
+    if (isDemoAuthEnabled()) {
+      const cookieStore = await cookies();
+      cookieStore.delete(demoSessionCookie);
+    }
+
     return { ok: true, message: 'Signed out.', redirectTo: '/login' };
   }
 
