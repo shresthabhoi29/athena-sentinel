@@ -36,6 +36,7 @@ export const settings = pgTable('settings', {
   pomodoroWorkDuration: integer('pomodoro_work_duration').default(25).notNull(),
   pomodoroShortBreak: integer('pomodoro_short_break').default(5).notNull(),
   pomodoroLongBreak: integer('pomodoro_long_break').default(15).notNull(),
+  openRouterApiKey: text('openrouter_api_key').default('').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
@@ -100,6 +101,7 @@ export const tasks = pgTable('tasks', {
   status: taskStatusEnum('status').default('todo').notNull(),
   priority: priorityEnum('priority').default('medium').notNull(),
   dueDate: timestamp('due_date'),
+  subjectId: uuid('subject_id').references(() => subjects.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -109,6 +111,7 @@ export const studySessions = pgTable('study_sessions', {
   userId: uuid('user_id')
     .references(() => users.id, { onDelete: 'cascade' })
     .notNull(),
+  subjectId: uuid('subject_id').references(() => subjects.id, { onDelete: 'set null' }),
   topicId: uuid('topic_id').references(() => topics.id, { onDelete: 'set null' }),
   startTime: timestamp('start_time').notNull(),
   endTime: timestamp('end_time'),
@@ -128,5 +131,54 @@ export const pomodoroSessions = pgTable('pomodoro_sessions', {
   durationMinutes: integer('duration_minutes').notNull(),
   completed: boolean('completed').default(false).notNull(),
   type: varchar('type', { length: 50 }).notNull(), // focus, short_break, long_break
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const flashcards = pgTable('flashcards', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
+  topicId: uuid('topic_id').references(() => topics.id, { onDelete: 'set null' }),
+  front: text('front').notNull(),
+  back: text('back').notNull(),
+  easeFactor: integer('ease_factor').default(250).notNull(),
+  interval: integer('interval').default(1).notNull(),
+  repetitions: integer('repetitions').default(0).notNull(),
+  dueDate: timestamp('due_date').defaultNow().notNull(),
+  lastReviewedAt: timestamp('last_reviewed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const exams = pgTable('exams', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
+  subjectId: uuid('subject_id')
+    .references(() => subjects.id, { onDelete: 'cascade' })
+    .notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  date: timestamp('date').notNull(),
+});
+
+export const resources = pgTable('resources', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
+  subjectId: uuid('subject_id').references(() => subjects.id, { onDelete: 'set null' }),
+  title: varchar('title', { length: 255 }).notNull(),
+  url: text('url').notNull(),
+  type: varchar('type', { length: 100 }).default('Link').notNull(),
+});
+
+export const chatMessages = pgTable('chat_messages', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
+  role: varchar('role', { length: 20 }).notNull(),
+  content: text('content').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

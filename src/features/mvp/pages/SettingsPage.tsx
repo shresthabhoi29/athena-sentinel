@@ -74,7 +74,7 @@ export function SettingsPage() {
       <SurfaceCard>
         <SectionHeader
           title="OpenRouter API Key"
-          description="Stored locally in this browser for AI chat."
+          description="Stored in your Athena settings for AI chat."
         />
         <Input
           type="password"
