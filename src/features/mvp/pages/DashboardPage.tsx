@@ -3,17 +3,13 @@
 import Link from 'next/link';
 import { BookOpen, CheckCircle2, Flame, Plus, Timer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { analyzeLearning } from '@/features/learning-engine';
 import { useWorkspaceStore } from '../store';
 import {
-  buildRecommendations,
-  completionPercentage,
   dailyStudyHours,
   formatDate,
-  isPastOrToday,
   isToday,
-  studyStreak,
   subjectDistribution,
-  subjectProgress,
   weeklyStudyHours,
 } from '../utils';
 import { MetricCard, ProgressBar, SectionHeader, SurfaceCard } from '../components/Cards';
@@ -26,21 +22,21 @@ import {
 export function DashboardPage() {
   const { subjects, chapters, topics, tasks, notes, sessions, flashcards, exams, settings } =
     useWorkspaceStore();
-  const todaysTasks = tasks.filter((task) => task.status !== 'done' && isToday(task.dueDate));
-  const upcomingRevision = topics
-    .filter((topic) => isPastOrToday(topic.nextReviewDate))
-    .slice(0, 4);
-  const recommendations = buildRecommendations({
-    flashcards,
-    tasks,
-    topics,
-    exams,
+  const intelligence = analyzeLearning({
     subjects,
-  }).slice(0, 5);
-  const todayMinutes = sessions
-    .filter((session) => isToday(session.date))
-    .reduce((sum, session) => sum + session.durationMinutes, 0);
-  const progress = completionPercentage(tasks, topics);
+    chapters,
+    topics,
+    tasks,
+    sessions,
+    flashcards,
+    exams,
+    settings,
+  });
+  const todaysTasks = tasks.filter((task) => task.status !== 'done' && isToday(task.dueDate));
+  const upcomingRevision = intelligence.revisionQueue.slice(0, 4);
+  const recommendations = intelligence.todayPriorities.slice(0, 5);
+  const todayMinutes = intelligence.analytics.studiedTodayMinutes;
+  const progress = intelligence.completionPercentage;
 
   return (
     <div className="mx-auto grid max-w-7xl gap-6">
@@ -82,14 +78,14 @@ export function DashboardPage() {
         />
         <MetricCard
           label="Streak"
-          value={`${studyStreak(sessions)} days`}
+          value={`${intelligence.studyStreak} days`}
           detail="Consecutive study days"
         />
         <MetricCard label="Completion" value={`${progress}%`} detail="Tasks and topics complete" />
         <MetricCard
-          label="Due Reviews"
-          value={`${flashcards.filter((card) => isPastOrToday(card.dueDate)).length}`}
-          detail="Flashcards waiting"
+          label="Plan"
+          value={`${intelligence.estimatedDailyStudyTime}m`}
+          detail="Estimated focus time"
         />
       </div>
 
@@ -105,7 +101,9 @@ export function DashboardPage() {
               >
                 <div>
                   <p className="text-sm font-medium text-white">{item.title}</p>
-                  <p className="text-xs text-zinc-500">{item.reason}</p>
+                  <p className="text-xs text-zinc-500">
+                    {item.reason} • score {item.score}
+                  </p>
                 </div>
                 <span className="text-xs text-indigo-300">Open</span>
               </Link>
@@ -154,12 +152,17 @@ export function DashboardPage() {
         <SurfaceCard>
           <SectionHeader title="Upcoming Revision" />
           <div className="space-y-3">
-            {upcomingRevision.map((topic) => (
-              <div key={topic.id} className="rounded-xl bg-black/20 p-3">
-                <p className="text-sm font-medium text-white">{topic.name}</p>
-                <p className="mt-1 text-xs text-zinc-500">Due {formatDate(topic.nextReviewDate)}</p>
+            {upcomingRevision.map((item) => (
+              <div key={item.id} className="rounded-xl bg-black/20 p-3">
+                <p className="text-sm font-medium text-white">{item.title}</p>
+                <p className="mt-1 text-xs text-zinc-500">
+                  {item.reason} • Due {formatDate(item.dueDate)}
+                </p>
               </div>
             ))}
+            {upcomingRevision.length === 0 && (
+              <p className="text-sm text-zinc-500">No revision due today.</p>
+            )}
           </div>
         </SurfaceCard>
 
@@ -186,12 +189,17 @@ export function DashboardPage() {
           <SectionHeader title="Study Progress" />
           <div className="space-y-4">
             {subjects.map((subject) => {
-              const value = subjectProgress(subject.id, chapters, topics);
+              const readiness = intelligence.subjectReadiness.find(
+                (item) => item.subject.id === subject.id,
+              );
+              const value = readiness?.completion ?? 0;
               return (
                 <div key={subject.id}>
                   <div className="mb-2 flex justify-between text-sm">
                     <span className="text-zinc-300">{subject.name}</span>
-                    <span className="text-zinc-500">{value}%</span>
+                    <span className="text-zinc-500">
+                      {value}% • {readiness?.readiness ?? 0}% ready
+                    </span>
                   </div>
                   <ProgressBar value={value} color={subject.color} />
                 </div>
