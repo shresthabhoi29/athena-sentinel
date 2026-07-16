@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { PlaceholderPage } from '@/features/shell/components/PlaceholderPage';
+import { SettingsPage as SettingsScreen } from '@/features/mvp/pages/SettingsPage';
 
 export const metadata: Metadata = {
   title: 'Settings | Athena OS',
 };
 
 export default function SettingsPage() {
-  return <PlaceholderPage route="/settings" />;
+  return <SettingsScreen />;
 }

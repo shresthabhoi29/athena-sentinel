@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { PlaceholderPage } from '@/features/shell/components/PlaceholderPage';
+import { TasksPage as TasksScreen } from '@/features/mvp/pages/TasksPage';
 
 export const metadata: Metadata = {
   title: 'Tasks | Athena OS',
 };
 
 export default function TasksPage() {
-  return <PlaceholderPage route="/tasks" />;
+  return <TasksScreen />;
 }

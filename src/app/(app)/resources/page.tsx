@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { PlaceholderPage } from '@/features/shell/components/PlaceholderPage';
+import { ResourcesPage as ResourcesScreen } from '@/features/mvp/pages/ResourcesPage';
 
 export const metadata: Metadata = {
   title: 'Resources | Athena OS',
 };
 
 export default function ResourcesPage() {
-  return <PlaceholderPage route="/resources" />;
+  return <ResourcesScreen />;
 }

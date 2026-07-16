@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { PlaceholderPage } from '@/features/shell/components/PlaceholderPage';
+import { NotesPage as NotesScreen } from '@/features/mvp/pages/NotesPage';
 
 export const metadata: Metadata = {
   title: 'Notes | Athena OS',
 };
 
 export default function NotesPage() {
-  return <PlaceholderPage route="/notes" />;
+  return <NotesScreen />;
 }

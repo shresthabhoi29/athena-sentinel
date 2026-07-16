@@ -2,9 +2,11 @@
 
 import { Search, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { useWorkspaceStore } from '@/features/mvp/store';
 import { quickAddActions, shellNavItems } from '../navigation';
 
 type CommandMode = 'search' | 'quick-add';
@@ -22,6 +24,19 @@ export function AppCommandDialog({
   onOpenChange,
   onModeChange,
 }: AppCommandDialogProps) {
+  const router = useRouter();
+  const {
+    subjects,
+    chapters,
+    topics,
+    notes,
+    tasks,
+    addTask,
+    addNote,
+    addSubject,
+    addFlashcard,
+    addResource,
+  } = useWorkspaceStore();
   const [query, setQuery] = useState('');
 
   useEffect(() => {
@@ -47,15 +62,104 @@ export function AppCommandDialog({
 
   const visibleRoutes = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
+    const routeResults = shellNavItems.map((item) => ({
+      id: `route-${item.href}`,
+      title: item.title,
+      description: item.description,
+      href: item.href,
+      icon: item.icon,
+    }));
+    const dataResults = [
+      ...subjects.map((subject) => ({
+        id: `subject-${subject.id}`,
+        title: subject.name,
+        description: `Subject • ${subject.description}`,
+        href: '/subjects',
+        icon:
+          shellNavItems.find((item) => item.href === '/subjects')?.icon ?? shellNavItems[0].icon,
+      })),
+      ...topics.map((topic) => ({
+        id: `topic-${topic.id}`,
+        title: topic.name,
+        description: `Topic • ${topic.status}`,
+        href: '/subjects',
+        icon:
+          shellNavItems.find((item) => item.href === '/learning')?.icon ?? shellNavItems[0].icon,
+      })),
+      ...notes.map((note) => ({
+        id: `note-${note.id}`,
+        title: note.title,
+        description: `Note • ${note.tags.join(', ')}`,
+        href: '/notes',
+        icon: shellNavItems.find((item) => item.href === '/notes')?.icon ?? shellNavItems[0].icon,
+      })),
+      ...tasks.map((task) => ({
+        id: `task-${task.id}`,
+        title: task.title,
+        description: `Task • ${task.status} • ${task.priority}`,
+        href: '/tasks',
+        icon: shellNavItems.find((item) => item.href === '/tasks')?.icon ?? shellNavItems[0].icon,
+      })),
+    ];
+    const allResults = [...routeResults, ...dataResults];
 
     if (!normalizedQuery) {
-      return shellNavItems;
+      return allResults.slice(0, 12);
     }
 
-    return shellNavItems.filter((item) =>
+    return allResults.filter((item) =>
       `${item.title} ${item.description}`.toLowerCase().includes(normalizedQuery),
     );
-  }, [query]);
+  }, [notes, query, subjects, tasks, topics]);
+
+  function runQuickAction(title: string) {
+    if (title === 'Task') {
+      addTask({
+        title: 'New task',
+        description: '',
+        priority: 'medium',
+        dueDate: new Date().toISOString(),
+        subjectId: subjects[0]?.id,
+      });
+      router.push('/tasks');
+    } else if (title === 'Note') {
+      addNote({
+        title: 'New note',
+        content: '## New note\nStart writing...',
+        tags: ['inbox'],
+        topicId: topics[0]?.id,
+      });
+      router.push('/notes');
+    } else if (title === 'Subject') {
+      addSubject({
+        name: 'New Subject',
+        description: 'Describe this subject.',
+        color: '#818CF8',
+      });
+      router.push('/subjects');
+    } else if (title === 'Flashcard') {
+      addFlashcard({
+        front: 'New question',
+        back: 'New answer',
+        topicId: topics[0]?.id,
+      });
+      router.push('/flashcards');
+    } else if (title === 'Resource') {
+      addResource({
+        title: 'New resource',
+        url: 'https://example.com',
+        type: 'Link',
+        subjectId: subjects[0]?.id,
+      });
+      router.push('/resources');
+    } else {
+      if (chapters[0]) {
+        router.push('/learning');
+      }
+    }
+
+    handleOpenChange(false);
+  }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -98,6 +202,7 @@ export function AppCommandDialog({
                     <button
                       key={item.title}
                       type="button"
+                      onClick={() => runQuickAction(item.title)}
                       className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-left transition hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:outline-none"
                     >
                       <span className="flex items-center gap-2 text-sm font-medium text-white">
@@ -118,7 +223,7 @@ export function AppCommandDialog({
 
                 return (
                   <Link
-                    key={item.href}
+                    key={item.id}
                     href={item.href}
                     className="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-indigo-500/50 focus-visible:outline-none"
                     onClick={() => handleOpenChange(false)}

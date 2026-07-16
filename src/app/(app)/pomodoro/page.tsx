@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { PlaceholderPage } from '@/features/shell/components/PlaceholderPage';
+import { PomodoroPage as PomodoroScreen } from '@/features/mvp/pages/PomodoroPage';
 
 export const metadata: Metadata = {
   title: 'Pomodoro | Athena OS',
 };
 
 export default function PomodoroPage() {
-  return <PlaceholderPage route="/pomodoro" />;
+  return <PomodoroScreen />;
 }
