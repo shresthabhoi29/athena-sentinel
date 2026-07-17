@@ -8,9 +8,10 @@ import {
   GraduationCap,
   Home,
   Library,
+  LucideIcon,
   NotebookText,
   Settings,
-  type LucideIcon,
+  ShieldCheck,
 } from 'lucide-react';
 
 export type ShellNavItem = {
@@ -72,7 +73,7 @@ export const shellNavItems: ShellNavItem[] = [
   {
     title: 'Sentinel',
     href: '/Sentinel',
-    icon: Library,
+    icon: ShieldCheck,
     description: 'Reference material and external links.',
   },
   {
