@@ -95,3 +95,48 @@ export function studyStreak(sessions: StudySession[]) {
 export function completionPercentage(tasks: Task[], topics: Topic[]) {
   return calculateOverallCompletion(tasks, topics);
 }
+
+export function getStudyGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour < 5) {
+    return 'Night Owl';
+  }
+
+  if (hour < 12) {
+    return 'Good morning';
+  }
+
+  if (hour < 17) {
+    return 'Good afternoon';
+  }
+
+  if (hour < 20) {
+    return 'Good evening';
+  }
+
+  return 'Late-night learner';
+}
+
+export function monthlyStudyMinutes(sessions: StudySession[]) {
+  const today = new Date();
+  const windowStart = new Date(today);
+  windowStart.setDate(today.getDate() - 29);
+
+  return sessions
+    .filter((session) => {
+      const sessionDate = new Date(session.date);
+      return sessionDate >= windowStart && sessionDate <= today;
+    })
+    .reduce((total, session) => total + session.durationMinutes, 0);
+}
+
+export function formatDuration(minutes: number) {
+  if (minutes < 60) {
+    return `${minutes}m`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  return `${hours}h ${remainder}m`;
+}
