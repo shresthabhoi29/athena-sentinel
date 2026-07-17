@@ -151,7 +151,7 @@ export function AppCommandDialog({
         type: 'Link',
         subjectId: subjects[0]?.id,
       });
-      router.push('/resources');
+      router.push('/Sentinel');
     } else {
       if (chapters[0]) {
         router.push('/learning');

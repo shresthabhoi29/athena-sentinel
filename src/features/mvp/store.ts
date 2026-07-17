@@ -34,7 +34,7 @@ import {
   seedFlashcards,
   seedMessages,
   seedNotes,
-  seedResources,
+  seedSentinel,
   seedSessions,
   seedSettings,
   seedSubjects,
@@ -67,7 +67,7 @@ const fallbackWorkspace: WorkspaceSnapshot = {
   sessions: seedSessions,
   flashcards: seedFlashcards,
   exams: seedExams,
-  resources: seedResources,
+  Sentinel: seedSentinel,
   settings: seedSettings,
   chatMessages: seedMessages,
 };
@@ -400,7 +400,7 @@ export function useWorkspaceStore() {
     mutationFn: addResourceAction,
     optimisticUpdate: (snapshot, input) => ({
       ...snapshot,
-      resources: [{ id: tempId('res'), ...input }, ...snapshot.resources],
+      Sentinel: [{ id: tempId('res'), ...input }, ...snapshot.Sentinel],
     }),
   });
   const updateSettingsMutation = useWorkspaceMutation<Partial<AthenaSettings>>({

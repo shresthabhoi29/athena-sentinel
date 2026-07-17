@@ -7,8 +7,8 @@ import { AIChat } from '../components/AIChat';
 import { SectionHeader, SurfaceCard } from '../components/Cards';
 import { useWorkspaceStore } from '../store';
 
-export function ResourcesPage() {
-  const { resources, subjects, addResource } = useWorkspaceStore();
+export function SentinelPage() {
+  const { Sentinel, subjects, addResource } = useWorkspaceStore();
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? '');
@@ -24,7 +24,7 @@ export function ResourcesPage() {
     <div className="mx-auto grid max-w-7xl gap-6">
       <div>
         <p className="text-sm font-medium text-indigo-300">References and AI</p>
-        <h1 className="mt-2 text-3xl font-semibold text-white">Resources</h1>
+        <h1 className="mt-2 text-3xl font-semibold text-white">Sentinel</h1>
       </div>
       <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
         <div className="space-y-6">
@@ -58,9 +58,9 @@ export function ResourcesPage() {
             </div>
           </SurfaceCard>
           <SurfaceCard>
-            <SectionHeader title="Saved Resources" />
+            <SectionHeader title="Saved Sentinel" />
             <div className="space-y-3">
-              {resources.map((resource) => (
+              {Sentinel.map((resource) => (
                 <a
                   key={resource.id}
                   href={resource.url}

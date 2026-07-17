@@ -162,7 +162,7 @@ export const exams = pgTable('exams', {
   date: timestamp('date').notNull(),
 });
 
-export const resources = pgTable('resources', {
+export const Sentinel = pgTable('Sentinel', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id')
     .references(() => users.id, { onDelete: 'cascade' })

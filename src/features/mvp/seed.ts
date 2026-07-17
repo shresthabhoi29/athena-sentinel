@@ -225,7 +225,7 @@ export const seedExams: Exam[] = [
   { id: 'exam-2', title: 'Physics Mechanics Quiz', subjectId: 'sub-physics', date: iso(10) },
 ];
 
-export const seedResources: Resource[] = [
+export const seedSentinel: Resource[] = [
   {
     id: 'res-1',
     title: 'Calculus formula sheet',

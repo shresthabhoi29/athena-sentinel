@@ -70,8 +70,8 @@ export const shellNavItems: ShellNavItem[] = [
     description: 'Learning paths and active topics.',
   },
   {
-    title: 'Resources',
-    href: '/resources',
+    title: 'Sentinel',
+    href: '/Sentinel',
     icon: Library,
     description: 'Reference material and external links.',
   },

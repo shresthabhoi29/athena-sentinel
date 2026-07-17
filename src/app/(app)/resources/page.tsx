@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
-import { ResourcesPage as ResourcesScreen } from '@/features/mvp/pages/ResourcesPage';
+import { SentinelPage as SentinelScreen } from '@/features/mvp/pages/SentinelPage';
 
 export const metadata: Metadata = {
-  title: 'Resources | Athena OS',
+  title: 'Sentinel | Athena OS',
 };
 
-export default function ResourcesPage() {
-  return <ResourcesScreen />;
+export default function SentinelPage() {
+  return <SentinelScreen />;
 }

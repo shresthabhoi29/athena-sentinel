@@ -7,7 +7,7 @@ import {
   flashcards,
   notes,
   pomodoroSessions,
-  resources,
+  Sentinel,
   settings,
   studySessions,
   subjects,
@@ -20,7 +20,7 @@ import {
   seedFlashcards,
   seedMessages,
   seedNotes,
-  seedResources,
+  seedSentinel,
   seedSessions,
   seedSettings,
   seedSubjects,
@@ -52,7 +52,7 @@ export type WorkspaceSnapshot = {
   sessions: StudySession[];
   flashcards: Flashcard[];
   exams: Exam[];
-  resources: Resource[];
+  Sentinel: Resource[];
   settings: AthenaSettings;
   chatMessages: ChatMessage[];
 };
@@ -155,7 +155,7 @@ function mapExam(row: typeof exams.$inferSelect): Exam {
   };
 }
 
-function mapResource(row: typeof resources.$inferSelect): Resource {
+function mapResource(row: typeof Sentinel.$inferSelect): Resource {
   return {
     id: row.id,
     title: row.title,
@@ -311,8 +311,8 @@ async function seedWorkspaceIfNeeded(userId: string) {
       });
     }
 
-    for (const resource of seedResources) {
-      await tx.insert(resources).values({
+    for (const resource of seedSentinel) {
+      await tx.insert(Sentinel).values({
         userId,
         subjectId: resource.subjectId ? subjectIdMap.get(resource.subjectId) : null,
         title: resource.title,
@@ -377,7 +377,7 @@ export const workspaceRepository = {
         .where(eq(flashcards.userId, userId))
         .orderBy(asc(flashcards.dueDate)),
       db.select().from(exams).where(eq(exams.userId, userId)).orderBy(asc(exams.date)),
-      db.select().from(resources).where(eq(resources.userId, userId)),
+      db.select().from(Sentinel).where(eq(Sentinel.userId, userId)),
       db.select().from(settings).where(eq(settings.userId, userId)).limit(1),
       db
         .select()
@@ -395,7 +395,7 @@ export const workspaceRepository = {
       sessions: sessionRows.map(mapSession),
       flashcards: flashcardRows.map(mapFlashcard),
       exams: examRows.map(mapExam),
-      resources: resourceRows.map(mapResource),
+      Sentinel: resourceRows.map(mapResource),
       settings: mapSettings(settingsRows[0]),
       chatMessages: chatRows.map(mapChatMessage),
     };
@@ -615,7 +615,7 @@ export const workspaceRepository = {
   },
 
   async addResource(userId: string, input: Pick<Resource, 'title' | 'url' | 'type' | 'subjectId'>) {
-    await db.insert(resources).values({
+    await db.insert(Sentinel).values({
       userId,
       title: input.title,
       url: input.url,
