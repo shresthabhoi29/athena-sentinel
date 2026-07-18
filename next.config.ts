@@ -1,7 +1,3 @@
-const nextConfig = {
-  experimental: {
-    disableTurbopack: true,
-  },
-};
+const nextConfig = {};
 
 export default nextConfig;
