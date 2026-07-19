@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import AIDailyBriefing from './components/AIDailyBriefing';
 
 const stats = [
   { value: '92%', label: 'Retention' },
@@ -19,12 +20,12 @@ export default function SentinelPage() {
         <div className="absolute bottom-20 left-1/3 h-80 w-80 rounded-full bg-indigo-500/20 blur-[120px]" />
       </div>
 
-      <section className="relative mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center px-6 py-20">
+      <section className="relative mx-auto max-w-7xl px-6 py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-5 py-2 text-sm text-cyan-300"
+          className="mx-auto w-fit rounded-full border border-cyan-500/30 bg-cyan-500/10 px-5 py-2 text-sm text-cyan-300"
         >
           Athena Sentinel
         </motion.div>
@@ -46,7 +47,7 @@ export default function SentinelPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="mt-8 max-w-3xl text-center text-xl text-zinc-400"
+          className="mx-auto mt-8 max-w-3xl text-center text-xl text-zinc-400"
         >
           Predicts forgetting before it happens, protects your privacy, tracks mastery, and tells
           you exactly what to study next.
@@ -56,7 +57,7 @@ export default function SentinelPage() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="mt-16 grid w-full max-w-5xl gap-6 md:grid-cols-4"
+          className="mt-16 grid gap-6 md:grid-cols-4"
         >
           {stats.map((item) => (
             <div
@@ -69,25 +70,8 @@ export default function SentinelPage() {
           ))}
         </motion.div>
 
-        {/* Placeholder so we know the page compiles */}
-        <div className="mt-20 w-full max-w-6xl rounded-3xl border border-cyan-500/20 bg-white/5 p-10 backdrop-blur-xl">
-          <p className="font-semibold text-cyan-400">Present AI Analysis</p>
-
-          <h2 className="mt-2 text-3xl font-bold">Athena has analyzed study pattern for today.</h2>
-
-          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              ['Highest Priority', 'Electrostatics'],
-              ['Quick Win', '5 PYQs'],
-              ['Mastery', '+7%'],
-              ['Focus Window', '9:30–11:00'],
-            ].map(([title, value]) => (
-              <div key={title} className="rounded-2xl border border-white/10 bg-black/20 p-6">
-                <p className="text-sm text-zinc-400">{title}</p>
-                <h3 className="mt-3 text-xl font-bold">{value}</h3>
-              </div>
-            ))}
-          </div>
+        <div className="mt-12">
+          <AIDailyBriefing />
         </div>
       </section>
     </main>
