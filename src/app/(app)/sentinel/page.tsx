@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import AIDailyBriefing from './components/AIDailyBriefing';
 import MemoryHealth from './components/MemoryHealth';
+import PredictionRadar from './components/PredictionRadar';
 
 const stats = [
   { value: '92%', label: 'Retention' },
@@ -76,6 +77,10 @@ export default function SentinelPage() {
         </motion.div>
 
         <AIDailyBriefing />
+
+        <div className="w-full max-w-6xl">
+          <PredictionRadar />
+        </div>
 
         <MemoryHealth />
       </section>
