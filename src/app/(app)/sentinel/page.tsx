@@ -1,59 +1,84 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import AIDailyBriefing from './components/AIDailyBriefing';
+import MemoryHealth from './components/MemoryHealth';
 
-export default function AIDailyBriefing() {
+const stats = [
+  { value: '92%', label: 'Retention' },
+  { value: '14', label: 'Day Streak' },
+  { value: '3', label: 'Weak Topics' },
+  { value: '98', label: 'AI Confidence' },
+];
+
+export default function SentinelPage() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 25 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.8 }}
-      className="mt-10 rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-[#0B1220] to-[#111827] p-8 backdrop-blur-xl"
-    >
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm tracking-widest text-cyan-400 uppercase">AI Daily Briefing</p>
-
-          <h2 className="mt-2 text-3xl font-bold">Good Morning, Shrey 👋</h2>
-
-          <p className="mt-2 text-zinc-400">
-            Athena analyzed your learning history and generated recommendations for today.
-          </p>
-        </div>
-
-        <div className="rounded-full bg-cyan-500/10 px-4 py-2 text-cyan-300">
-          Updated 2 mins ago
-        </div>
+    <main className="relative min-h-screen overflow-hidden bg-[#05060A] text-white">
+      {/* Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 h-72 w-72 rounded-full bg-cyan-500/20 blur-[120px]" />
+        <div className="absolute top-40 right-10 h-96 w-96 rounded-full bg-violet-500/20 blur-[150px]" />
+        <div className="absolute bottom-20 left-1/3 h-80 w-80 rounded-full bg-indigo-500/20 blur-[120px]" />
       </div>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-3">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h3 className="text-sm text-zinc-400">🎯 Priority Revision</h3>
+      <section className="relative mx-auto max-w-7xl px-6 py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="mx-auto w-fit rounded-full border border-cyan-500/30 bg-cyan-500/10 px-5 py-2 text-sm text-cyan-300"
+        >
+          Athena Sentinel
+        </motion.div>
 
-          <ul className="mt-4 space-y-2">
-            <li>• Electrostatics</li>
-            <li>• Matrices</li>
-            <li>• Chemical Bonding</li>
-          </ul>
-        </div>
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-8 text-center text-6xl leading-tight font-black md:text-8xl"
+        >
+          The AI Study
+          <br />
+          <span className="bg-gradient-to-r from-cyan-400 via-indigo-400 to-violet-500 bg-clip-text text-transparent">
+            Guardian
+          </span>
+        </motion.h1>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h3 className="text-sm text-zinc-400">🧠 Memory Forecast</h3>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mx-auto mt-8 max-w-3xl text-center text-xl text-zinc-400"
+        >
+          Predicts forgetting before it happens, protects your privacy, tracks mastery, and tells
+          you exactly what to study next.
+        </motion.p>
 
-          <p className="mt-4 text-5xl font-bold text-cyan-400">82%</p>
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-16 grid gap-6 md:grid-cols-4"
+        >
+          {stats.map((item) => (
+            <motion.div
+              key={item.label}
+              whileHover={{
+                y: -8,
+                scale: 1.03,
+              }}
+              className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
+            >
+              <h2 className="text-5xl font-bold">{item.value}</h2>
+              <p className="mt-2 text-zinc-400">{item.label}</p>
+            </motion.div>
+          ))}
+        </motion.div>
 
-          <p className="mt-2 text-sm text-zinc-400">Predicted retention after present revision.</p>
-        </div>
+        <AIDailyBriefing />
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h3 className="text-sm text-zinc-400">⚡ Next Best Action</h3>
-
-          <p className="mt-4">
-            Spend <span className="font-bold text-cyan-400">32 minutes</span> reviewing
-            Electrostatics before attempting mixed PYQs.
-          </p>
-        </div>
-      </div>
-    </motion.div>
+        <MemoryHealth />
+      </section>
+    </main>
   );
 }
