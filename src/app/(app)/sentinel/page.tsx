@@ -12,7 +12,7 @@ const stats = [
   { value: '98', label: 'AI Confidence' },
 ];
 
-export default function SentinelPage() {
+export default function sentinelPage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05060A] text-white">
       {/* Background */}
