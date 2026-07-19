@@ -72,7 +72,7 @@ export const shellNavItems: ShellNavItem[] = [
   },
   {
     title: 'Sentinel',
-    href: '/Sentinel',
+    href: '/sentinel',
     icon: ShieldCheck,
     description: 'Reference material and external links.',
   },
